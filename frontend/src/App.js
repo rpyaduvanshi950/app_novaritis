@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PredictionForm from "../src/Predictionform";
+import PredictionForm from "./Predictionform";
 
 const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
