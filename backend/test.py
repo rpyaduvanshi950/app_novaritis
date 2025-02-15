@@ -4,7 +4,7 @@ import os
 
 # Check if the file exists:
 base_dir = os.path.dirname(__file__)
-file_path = os.path.join(base_dir, "content", "filedata.xlsx")
+file_path = os.path.join(base_dir, "content", "filedata2.xlsx")
 if os.path.exists(file_path):
     print(f"File found at: {file_path}")
 else:
@@ -260,7 +260,7 @@ X_test_data_numerical = X_test[numerical_cols].values
 # Verify the shapes
 print("X_test_numerical shape:", X_test_data_numerical.shape)
 
-X_test_embeddings=np.load('/content/X_test_data_embeddings.npy')
+X_test_embeddings=np.load('content/X_test_data_embeddings.npy')
 # Combine BioBERT embeddings with numerical features
 X_test_data_combined = np.hstack([X_test_embeddings, X_test_data_numerical])
 
@@ -287,7 +287,7 @@ import pickle
 import pandas as pd
 
 # Load the trained model
-model_path = "/content/gbm_model_log.pkl"
+model_path = "content/gbm_model_log.pkl"
 with open(model_path, 'rb') as file:
     gbm_model = pickle.load(file)
 
