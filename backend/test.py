@@ -5,6 +5,7 @@ import os
 # Check if the file exists:
 base_dir = os.path.dirname(__file__)
 file_path = os.path.join(base_dir, "content", "filedata2.xlsx")
+print("Checking for file at")
 if os.path.exists(file_path):
     print(f"File found at: {file_path}")
 else:

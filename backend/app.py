@@ -28,8 +28,15 @@ def upload():
     file.save(file_save_path)
     print("File saved to:", file_save_path)
 
-    process = subprocess.Popen(["python3", "test.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    print("Process started")
+# flag is added to directly print the output of the test file without buffering
+    process = subprocess.Popen(["python3", "-u", "test.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    
+    while True:
+        output = process.stdout.readline()
+        if output == '' and process.poll() is not None:
+            break
+        if output:
+            print(output.strip())
 
     return jsonify({"message": "File uploaded successfully"}), 200
 
