@@ -1,72 +1,48 @@
+from flask import Flask, send_from_directory, request, jsonify
 import os
 import shutil
 import subprocess
 import pickle
 import pandas as pd
-from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from test import process_file  # using test.py as is
 
-app = Flask(__name__, static_folder="../frontend/build", static_url_path="")
+
+app = Flask(__name__,static_folder="../frontend/build", static_url_path='')   
 CORS(app)
 
-# Load your ML model
-model_path = os.path.join(os.path.dirname(__file__), "gbm_model.pkl")
+# loads the model
+model_path = os.path.join(os.path.dirname(__file__), "content/gbm_model.pkl")
 with open(model_path, "rb") as file:
     model = pickle.load(file)
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    input_data = request.get_json()
-    df = pd.DataFrame([input_data])
-    prediction = model.predict(df)[0]
-    return jsonify({"prediction": prediction})
 
 @app.route('/upload', methods=['POST'])
 def upload():
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
-
+    
     file = request.files["file"]
 
-    # Saves the file to an "uploads" directory.
-    uploads_dir = os.path.join(os.path.dirname(__file__), "uploads")
+    uploads_dir = os.path.join(os.path.dirname(__file__), "content")
     os.makedirs(uploads_dir, exist_ok=True)
     file_save_path = os.path.join(uploads_dir, file.filename)
     file.save(file_save_path)
+    print("File saved to:", file_save_path)
 
-    relative_target_path = os.path.join(os.path.dirname(__file__), "Use_Case_4 Test_dataset_To be shared.xlsx")
-    shutil.copy(file_save_path, relative_target_path)
+# flag is added to directly print the output of the test file without buffering
+    process = subprocess.Popen(["python3", "-u", "test.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    
+    while True:
+        output = process.stdout.readline()
+        if output == '' and process.poll() is not None:
+            break
+        if output:
+            print(output.strip())
 
-    content_dir = os.path.join(os.path.dirname(__file__), "content")
-    os.makedirs(content_dir, exist_ok=True)
-    symlink_path = os.path.join(content_dir, "filedata.xlsx")
-    if os.path.lexists(symlink_path):
-        os.remove(symlink_path)
-    os.symlink(relative_target_path, symlink_path)
-
-    if file.filename.endswith(".csv"):
-        df = pd.read_csv(relative_target_path)
-    elif file.filename.endswith((".xlsx", ".xls")):
-        df = pd.read_excel(relative_target_path, engine="openpyxl")
-    else:
-        return jsonify({"error": "Unsupported file type"}), 400
-
-    # this runs the model script
-    result = subprocess.run(["python", "test.py"], capture_output=True, text=True)
-    print("Output from test.py:")
-    print(result.stdout)
-    print(result.stderr)
-
-    predictions = model.predict(df)
-    print("Predictions from model:")
-    print(predictions)
-
-    return jsonify({"message": "File processed and predictions made."})
+    return jsonify({"message": "File uploaded successfully"}), 200
 
 @app.route('/')
-def serve():
-    return send_from_directory(app.static_folder, 'index.html')
+def hello_world():
+    return send_from_directory(app.static_folder, 'index.html' )
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
