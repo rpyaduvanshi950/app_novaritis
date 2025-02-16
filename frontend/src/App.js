@@ -25,7 +25,7 @@ const App = () => {
       });
 
       const data = await response.json();
-      setUploadStatus(`File uploaded successfully! Prediction ID: ${data.prediction_id}`);
+      setUploadStatus(`File uploaded successfully!`);
     } catch (error) {
       setUploadStatus("Error uploading file. Please try again.");
     }
