@@ -5,7 +5,6 @@ import os
 # Check if the file exists:
 base_dir = os.path.dirname(__file__)
 file_path = os.path.join(base_dir, "content", "filedata2.xlsx")
-print("Checking for file at")
 if os.path.exists(file_path):
     print(f"File found at: {file_path}")
 else:
@@ -241,7 +240,7 @@ def generate_embeddings_in_batches(text_data, batch_size=32):
 # Generate embeddings for training and testing sets
 X_test_embeddings = generate_embeddings_in_batches(X_test['combined_text'].values, batch_size=32)
 
-np.save('X_test_data_embeddings.npy', X_test_embeddings)
+np.save('content/X_test_data_embeddings.npy', X_test_embeddings)
 # Declare textual and numerical columns
 textual_cols = [
     'Study Title', 'Brief Summary', 'Conditions', 'Interventions',
@@ -261,12 +260,17 @@ X_test_data_numerical = X_test[numerical_cols].values
 # Verify the shapes
 print("X_test_numerical shape:", X_test_data_numerical.shape)
 
-X_test_embeddings=np.load('content/X_test_data_embeddings.npy')
+base_dir = os.path.dirname(__file__)
+embeddings_path = os.path.join(base_dir, "content", "X_test_data_embeddings.npy")
+X_test_embeddings = np.load(embeddings_path)
+
+# X_test_embeddings=np.load('content/X_test_data_embeddings.npy')
 # Combine BioBERT embeddings with numerical features
+print("embedding data shape :",X_test_embeddings.shape)
 X_test_data_combined = np.hstack([X_test_embeddings, X_test_data_numerical])
 
 # Save combined features
-np.save('X_test_data_combined.npy', X_test_data_combined)
+np.save('content/X_test_data_combined.npy', X_test_data_combined)
 
 from sklearn.preprocessing import StandardScaler
 import joblib
@@ -288,7 +292,7 @@ import pickle
 import pandas as pd
 
 # Load the trained model
-model_path = "content/gbm_model_log.pkl"
+model_path = "content/gbm_model.pkl"
 with open(model_path, 'rb') as file:
     gbm_model = pickle.load(file)
 
@@ -302,10 +306,13 @@ y_pred_rescaled = np.expm1(y_pred_log)  # Use np.expm1 to reverse log(1+x)
 predictions_df = pd.DataFrame({
     'Predicted Recruitment Rate': y_pred_rescaled.flatten()
 })
-
+print(predictions_df.head())
 # Save predictions to an Excel file
 output_file = "predictions.xlsx"
 predictions_df.to_excel(output_file, index=False)
+
+# with open('predictions.xlsx','r') as f:
+#     print(f.read())
 
 print(f"Predictions saved to {output_file}")
 nct_id = data['NCT Number']

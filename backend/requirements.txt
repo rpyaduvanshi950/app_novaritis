@@ -6,3 +6,4 @@ openpyxl
 transformers
 torch
 seaborn
+xgboost
