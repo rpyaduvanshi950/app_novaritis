@@ -39,8 +39,7 @@ const PredictionForm = () => {
 
   return (
     <div className="container">
-      <h1 className="header center orange-text">Prediction Model</h1>
-      <h5 className="header center light">Prediction of Recruitment Rate</h5>
+      <h5 className="header center orange-text">Enter Your Data</h5>
 
       <form onSubmit={handleSubmit} className="row">
         {/* Row 1 */}
