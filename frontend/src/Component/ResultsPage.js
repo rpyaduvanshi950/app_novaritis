@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Footer from "./Footer";
 
 const ResultsPage = () => {
   const navigate = useNavigate();
@@ -46,6 +47,8 @@ const ResultsPage = () => {
   };
 
   return (
+    <div>
+
     <div className="container">
       <h5 className="header center orange-text">Processed Data</h5>
 
@@ -64,11 +67,13 @@ const ResultsPage = () => {
           <span className="material-icons">arrow_back</span> Back to Upload
         </button>
       </div>
+          <div>
 
       <div className="row center">
         {renderFinalData()}
       </div>
-
+          </div>
+        
       <style>
         {`
           /* Remove hover effect for table rows */
@@ -107,6 +112,11 @@ const ResultsPage = () => {
         `}
       </style>
     </div>
+      <div>
+        <Footer />  
+          </div>
+    </div>
+
   );
 };
 
