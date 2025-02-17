@@ -62,12 +62,24 @@ const UploadPage = () => {
           justifyContent: "center",
           alignItems: "center",
           gap: "100px",
+          paddingTop: "20px", 
         }}>
         <div>
-          <img src={photo} style={{
+          {/* <img src={photo} style={{
             width: "600px",
             paddingTop: "10px"
-          }} />
+          }} /> */}
+          <img 
+  src={photo} 
+  style={{
+    width: "600px",
+    // paddingTop: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Adds a shadow effect
+    borderRadius: "15px", // Adds rounded corners
+    zIndex: "10" // Adjusts the stacking order
+  }} 
+/>
+
         </div>
         <div className="flex flex-col items-center justify-center">
 
@@ -132,7 +144,7 @@ const UploadPage = () => {
       )}
 
       {isLoading && <Loader message={loadingMessage} />}
-      <div style={{ paddingTop: "96px" }}>
+      <div style={{ paddingTop: "87px" }}>
         <Footer />
       </div>
     </div>
